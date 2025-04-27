@@ -1,19 +1,12 @@
 <launch>
-    <include file="$(find easondrone_gazebo)/launch/mavros_posix_sitl.launch"/>
-
-    <node name="filter_pc" type="filter_pc" pkg="easondrone_mapping"/>
-
-    <include file="$(find easondrone_gazebo)/launch/transform.launch"/>
+    <include file="$(find easondrone_gazebo)/launch/spawn_iris.launch">
+        <arg name="world" default="$(find aws_robomaker_bookstore_world)/worlds/bookstore.world"/>
+        <arg name="sdf" default="$(find easondrone_gazebo)/models/drone/iris_d435i_mid360/iris_d435i_mid360.sdf"/>
+    </include>
 
     <include file="$(find px4ctrl)/launch/px4ctrl.launch"/>
 
-    <node pkg="easondrone_mapping" type="merge_pc2" name="merge_pc2">
-        <rosparam command="load" file="$(find ego_planner)/config/merge_pc2.yaml" />
-    </node>
-
     <include file="$(find ego_planner)/launch/simple_run.launch"/>
-
-    <node type="odom_visualization" pkg="odom_visualization" name="odom_visualization"/>
 
     <node type="rviz" name="rviz" pkg="rviz" args="-d $(find ego_planner)/config/default.rviz"/>
 </launch>
