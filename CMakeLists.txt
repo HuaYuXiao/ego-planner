@@ -16,7 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
         quadrotor_msgs
         plan_env
         path_searching
+        bspline
         bspline_opt
+        poly_traj
         traj_utils
         message_generation
         cv_bridge
@@ -40,7 +42,7 @@ generate_messages(
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES ego_planner
-        CATKIN_DEPENDS plan_env path_searching bspline_opt traj_utils message_runtime
+        CATKIN_DEPENDS plan_env path_searching bspline bspline_opt poly_traj traj_utils message_runtime
         #  DEPENDS system_lib
 )
 
@@ -60,6 +62,7 @@ add_executable(ego_planner_node
 )
 target_link_libraries(ego_planner_node
         ${catkin_LIBRARIES}
+        ${PCL_LIBRARIES}
 )
 add_dependencies(ego_planner_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 

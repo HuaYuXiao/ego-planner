@@ -1,10 +1,13 @@
 # Note!
-Our recently developed planner [EGO-Swarm](https://github.com/ZJU-FAST-Lab/ego-planner-swarm) is an evolution from EGO-Planner.
+Our recently developed planner [EGO-Swarm](https://github.com/ZJU-FAST-Lab/ego-planner-swarm) is an evolution from EGO-Planner. 
 It is more robust and safe, and therefore, is more recommended to use.
 If you have only one drone, just set the `drone_id` to `0` in EGO-Swarm's launch files.
 Of course, some topic names are changed from EGO-Planner, check it using `rqt_graph` and `rosnode info <package name>`.
 
-# Quick Start within 3 Minutes
+# ROS2 Support
+For the ROS2 version, please refer to the branch [ros2_version](https://github.com/ZJU-FAST-Lab/ego-planner-swarm/tree/ros2_version) of the repo ego-planner-swarm.
+
+# Quick Start within 3 Minutes 
 Compiling tests passed on ubuntu **16.04, 18.04 and 20.04** with ros installed.
 You can just execute the following commands one by one.
 ```
@@ -22,21 +25,14 @@ If you find this work useful or interesting, please kindly give us a star :star:
 # Acknowledgements
 - The framework of this repository is based on [Fast-Planner](https://github.com/HKUST-Aerial-Robotics/Fast-Planner) by Zhou Boyu who achieves impressive proformance on quadrotor local planning.
 
-- The L-BFGS solver we use is from [LBFGS-Lite](https://github.com/ZJU-FAST-Lab/LBFGS-Lite).
-  It is a C++ head-only single file, which is lightweight and easy to use.
+- The L-BFGS solver we use is from [LBFGS-Lite](https://github.com/ZJU-FAST-Lab/LBFGS-Lite). 
+It is a C++ head-only single file, which is lightweight and easy to use.
 
 - The map generated in simulation is from [mockamap](https://github.com/HKUST-Aerial-Robotics/mockamap) by William Wu.
 
 - The hardware architecture is based on an open source implemation from [Teach-Repeat-Replan](https://github.com/HKUST-Aerial-Robotics/Teach-Repeat-Replan).
 
-# EGO-Planner
-
-![HitCount](https://img.shields.io/endpoint?url=https%3A%2F%2Fhits.dwyl.com%2FHuaYuXiao%2FEGO-Planner.json%3Fcolor%3Dpink)
-![Static Badge](https://img.shields.io/badge/ROS-noetic-22314E?logo=ros)
-![Static Badge](https://img.shields.io/badge/OpenCV-4.2.0-5C3EE8?logo=opencv)
-![Static Badge](https://img.shields.io/badge/C%2B%2B-14-00599C?logo=cplusplus)
-![Static Badge](https://img.shields.io/badge/Ubuntu-20.04.6-E95420?logo=ubuntu)
-
+# EGO-Planner 
 EGO-Planner: An ESDF-free Gradient-based Local Planner for Quadrotors
 
 **EGO-Planner** is a lightweight gradient-based local planner without ESDF construction, which significantly reduces computation time compared to some state-of-the-art methods <!--(EWOK and Fast-Planner)-->. The total planning time is only **around 1ms** and don't need to compute ESDF.
@@ -64,14 +60,20 @@ sudo apt-get install libarmadillo-dev
 
 **Step 2**. Clone the code from github or gitee. This two repositories synchronize automaticly.
 
+From github,
 ```
-git clone https://github.com/HuaYuXiao/EGO-Planner.git
+git clone https://github.com/ZJU-FAST-Lab/ego-planner.git
+```
+
+Or from gitee,
+```
+git clone https://gitee.com/iszhouxin/ego-planner.git
 ```
 
 **Step 3**. Compile,
-```shell
-cd ~/EasonDrone
-catkin_make --source Planning/EGO-Planner --build Planning/EGO-Planner/build
+```
+cd ego-planner
+catkin_make -DCMAKE_BUILD_TYPE=Release
 ```
 
 **Step 4**. Run.
@@ -85,7 +87,7 @@ roslaunch ego_planner rviz.launch
 In another terminal at the _ego-planner/_, run the planner in simulation by
 ```
 source devel/setup.bash
-roslaunch ego_planner simulation.launch
+roslaunch ego_planner run_in_sim.launch
 ```
 
 Then you can follow the gif below to control the drone.
@@ -93,8 +95,6 @@ Then you can follow the gif below to control the drone.
 <p align = "center">
 <img src="pictures/sim_demo.gif" width = "640" height = "438" border="5" />
 </p>
-
-![rosgraph](doc/rosgraph.png)
 
 ## 3. Using an IDE
 We recommend using [vscode](https://code.visualstudio.com/), the project file has been included in the code you have cloned, which is the _.vscode_ folder.
@@ -120,29 +120,29 @@ You can add customized arguments after **"args"**. The default is **"-DCMAKE_BUI
 
 **Step 4**. Close and re-launch vscode, you will see the vscode has already understood the code architecture and can perform auto completion & jump.
 
-## 4. Use GPU or Not
-Packages in this repo, **local_sensing** have GPU, CPU two different versions. By default, they are in CPU version for better compatibility. By changing
-
+ ## 4. Use GPU or Not
+ Packages in this repo, **local_sensing** have GPU, CPU two different versions. By default, they are in CPU version for better compatibility. By changing
+ 
  ```
  set(ENABLE_CUDA false)
  ```
-
-in the _CMakeList.txt_ in **local_sensing** packages, to
-
+ 
+ in the _CMakeList.txt_ in **local_sensing** packages, to
+ 
  ```
  set(ENABLE_CUDA true)
  ```
+ 
+CUDA will be turned-on to generate depth images as a real depth camera does. 
 
-CUDA will be turned-on to generate depth images as a real depth camera does.
-
-Please remember to also change the 'arch' and 'code' flags in the line of
+Please remember to also change the 'arch' and 'code' flags in the line of 
 ```
     set(CUDA_NVCC_FLAGS 
       -gencode arch=compute_61,code=sm_61;
     ) 
 ``` 
 in _CMakeList.txt_. If you encounter compiling error due to different Nvidia graphics card you use or you can not see proper depth images as expected, you can check the right code via [link1](https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/) or [link2](https://github.com/tpruvot/ccminer/wiki/Compatibility).
-
+ 
 Don't forget to re-compile the code!
 
 **local_sensing** is the simulated sensors. If ```ENABLE_CUDA``` **true**, it mimics the depth measured by stereo cameras and renders a depth image by GPU. If ```ENABLE_CUDA``` **false**, it will publish pointclouds with no ray-casting. Our local mapping module automatically selects whether depth images or pointclouds as its input.
@@ -184,7 +184,7 @@ What's more, parameters ```depth_fps``` and ```infra_fps``` must be identical, a
 
 The driver of librealsense2 2.30.0 should be installed explicitly.
 On a x86 CPU, this can be performed easily within 5 minutes.
-Firstly, remove the currently installed driver by
+Firstly, remove the currently installed driver by 
 ```
 sudo apt remove librealsense2-utils
 ```
@@ -211,14 +211,14 @@ sudo apt install librealsense2-dev=2.30.0-0~realsense0.1693
 sudo apt remove librealsense2-udev-rules
 sudo apt install librealsense2-udev-rules=2.30.0-0~realsense0.1693
 ``` 
-Here you can varify the installation by
+Here you can varify the installation by 
 ```
 realsense-viewer
 ```
 
 ##  Run
 
-If everything looks well, you can now compile the ros-realsense package named _modified_realsense2_camera.zip_ by ```catkin_make```, then run ros realsense node by
+If everything looks well, you can now compile the ros-realsense package named _modified_realsense2_camera.zip_ by ```catkin_make```, then run ros realsense node by 
 ```
 roslaunch realsense_camera rs_camera.launch
 ```
@@ -241,7 +241,7 @@ If this simulator is helpful to you, plaease kindly give a star to [Fast-Planner
 The source code is released under [GPLv3](http://www.gnu.org/licenses/) license.
 
 # Maintaince
-We are still working on extending the proposed system and improving code reliability.
+We are still working on extending the proposed system and improving code reliability. 
 
 For any technical issues, please contact Xin Zhou (iszhouxin@zju.edu.cn) or Fei GAO (fgaoaa@zju.edu.cn).
 
